@@ -63,7 +63,7 @@ function pingLatency() {
 
 
 # agent version
-agent_version="1.0"
+agent_version="1.1"
 POST="$POST{agent_version}$agent_version{/agent_version}"
 
 # serverkey
@@ -129,24 +129,29 @@ POST="$POST{disks_inodes}$disks_inodes{/disks_inodes}"
 file_descriptors=$(cat /proc/sys/fs/file-nr | awk '{print $1","$2","$3}')
 POST="$POST{file_descriptors}$file_descriptors{/file_descriptors}"
 
+
 # RAM Total
-ram_total=$(cat /proc/meminfo | grep ^MemTotal: | awk '{print $2}')
+# ram_total=$(free | grep ^Mem: | awk '{print $2}')
+ram_total=$(free | awk 'FNR == 2 {print $2}')
 POST="$POST{ram_total}$ram_total{/ram_total}"
 
 # RAM Free
-ram_free=$(cat /proc/meminfo | grep ^MemFree: | awk '{print $2}')
+# ram_free=$(free | grep ^Mem: | awk '{print $4}')
+ram_free=$(free | awk 'FNR == 2 {print $4}')
 POST="$POST{ram_free}$ram_free{/ram_free}"
 
 # RAM Caches
-ram_caches=$(cat /proc/meminfo | grep ^Cached: | awk '{print $2}')
+#ram_caches=$(free | grep ^Mem: | awk '{print $6}')
+ram_caches=$(free | awk 'FNR == 2 {print $6}')
 POST="$POST{ram_caches}$ram_caches{/ram_caches}"
 
 # RAM Buffers
-ram_buffers=$(cat /proc/meminfo | grep ^Buffers: | awk '{print $2}')
+ram_buffers=0
 POST="$POST{ram_buffers}$ram_buffers{/ram_buffers}"
 
 # RAM USAGE
-ram_usage=$(($ram_total-($ram_free+$ram_caches+$ram_buffers)))
+# ram_usage=$(free | grep ^Mem: | awk '{print $3}')
+ram_usage=$(free | awk 'FNR == 2 {print $3}')
 POST="$POST{ram_usage}$ram_usage{/ram_usage}"
 
 # SWAP Total
