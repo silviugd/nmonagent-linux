@@ -129,7 +129,6 @@ POST="$POST{disks_inodes}$disks_inodes{/disks_inodes}"
 file_descriptors=$(cat /proc/sys/fs/file-nr | awk '{print $1","$2","$3}')
 POST="$POST{file_descriptors}$file_descriptors{/file_descriptors}"
 
-
 # RAM Total
 # ram_total=$(free | grep ^Mem: | awk '{print $2}')
 ram_total=$(free | awk 'FNR == 2 {print $2}')
@@ -146,7 +145,7 @@ ram_caches=$(free | awk 'FNR == 2 {print $6}')
 POST="$POST{ram_caches}$ram_caches{/ram_caches}"
 
 # RAM Buffers
-ram_buffers=0
+ram_buffers=$(cat /proc/meminfo | grep ^Buffers: | awk '{print $2}')
 POST="$POST{ram_buffers}$ram_buffers{/ram_buffers}"
 
 # RAM USAGE
